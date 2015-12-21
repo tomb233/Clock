@@ -1,8 +1,12 @@
 package clock;
 
+import javafx.scene.layout.Priority;
+
 import javax.swing.*;
+import java.io.FileInputStream;
 import java.util.Calendar;
 import java.util.Observable;
+
 //import java.util.GregorianCalendar;
 
 public class Model extends Observable {
@@ -11,6 +15,8 @@ public class Model extends Observable {
     int minute = 0;
     int second = 0;
     PriorityQueue<Alarm> q = new SortedArrayPriorityQueue<>(8);
+
+
 
     int oldSecond = 0;
     
@@ -32,9 +38,9 @@ public class Model extends Observable {
 
 
 
-    public void addAlarm(Alarm a){
+    public void addAlarm(Alarm a,Long p){
         try{
-            q.add(a,1);
+            q.add(a,p);
         } catch (QueueOverflowException e){
             System.out.println("Add operation failed: " + e);
         }
@@ -118,7 +124,8 @@ public class Model extends Observable {
         System.out.println(Minutes);
 
             Alarm newAlarm = new Alarm(Hours,Minutes);
-            addAlarm(newAlarm);
+
+            addAlarm(newAlarm, newAlarm.getPriority());
     }
 
     public String printAlarms(){
