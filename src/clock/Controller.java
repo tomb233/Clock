@@ -23,6 +23,14 @@ public class Controller {
         
         timer = new Timer(100, listener);
         timer.start();
+        Timer SimpleTimer = new Timer(1000, new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                view.updateLabel(model);
+
+            }
+        });
+        SimpleTimer.start();
     }
 
 

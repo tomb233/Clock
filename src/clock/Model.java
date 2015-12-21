@@ -3,8 +3,15 @@ package clock;
 import javafx.scene.layout.Priority;
 
 import javax.swing.*;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Observable;
 
 //import java.util.GregorianCalendar;
@@ -16,8 +23,28 @@ public class Model extends Observable {
     int second = 0;
     PriorityQueue<Alarm> q = new SortedArrayPriorityQueue<>(8);
 
+    String[] list4 = { "00", "01", "02", "03", "04", "05", "06", "07", "08",
 
+            "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19",
 
+            "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30",
+
+            "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41",
+
+            "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52",
+
+            "53", "54", "55", "56", "57", "58", "59", "60" };
+    String[] list3 = { "00", "01", "02", "03", "04", "05", "06", "07", "08",
+
+            "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19",
+
+            "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30",
+
+            "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41",
+
+            "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52",
+
+            "53", "54", "55", "56", "57", "58", "59", "60" };
     int oldSecond = 0;
     
     public Model() {
@@ -26,6 +53,7 @@ public class Model extends Observable {
     
     public void update() {
         Calendar date = Calendar.getInstance();
+
         hour = date.get(Calendar.HOUR);
         minute = date.get(Calendar.MINUTE);
         oldSecond = second;
@@ -34,6 +62,35 @@ public class Model extends Observable {
             setChanged();
             notifyObservers();
         }
+        try{
+
+            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+
+
+            //get current date time with Calendar()
+            Calendar cal1 = Calendar.getInstance();
+            //System.out.println(dateFormat.format(cal1.getTime()));
+
+            long time = cal1.getTimeInMillis();
+           // System.out.println("Testing alarm");
+            Alarm hello;
+            hello = q.head();
+            //System.out.println(dateFormat.format(hello.cal.getTime()));   Testing code
+            long calTime = hello.getPriority();
+           // System.out.println(calTime);
+           // System.out.println(time);
+            if(calTime <= time){
+                //System.out.println("RING RING RING"); //Insert ringing method here
+                q.remove();
+                ringAlarm();
+                //delete old head from priority queue
+            }else if(calTime >= time){
+                //System.out.println("Not yet");
+            }
+        }catch(QueueUnderflowException e) {
+            //System.out.println("Error underflow in alarm check");
+        }
+
     }
 
 
@@ -65,17 +122,7 @@ public class Model extends Observable {
     }
 
     public String getMinutes(){
-        String[] list3 = { "00", "01", "02", "03", "04", "05", "06", "07", "08",
 
-                "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19",
-
-                "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30",
-
-                "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41",
-
-                "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52",
-
-                "53", "54", "55", "56", "57", "58", "59", "60" };
 
         String m = (String)JOptionPane.showInputDialog(
                 null,
@@ -91,17 +138,7 @@ public class Model extends Observable {
 
     public String getSeconds(){
 
-        String[] list4 = { "00", "01", "02", "03", "04", "05", "06", "07", "08",
 
-                "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19",
-
-                "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30",
-
-                "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41",
-
-                "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52",
-
-                "53", "54", "55", "56", "57", "58", "59", "60" };
 
         String s = (String)JOptionPane.showInputDialog(
                 null,
@@ -132,5 +169,79 @@ public class Model extends Observable {
        String answer =  q.toString();
         return answer;
 
+    }
+    public void ringAlarm(){
+        // create a jframe
+        JFrame frame = new JFrame("JOptionPane showMessageDialog example");
+
+        // show a joptionpane dialog using showMessageDialog
+        JOptionPane.showMessageDialog(frame,
+                "RING RING RING");
+
+    }
+    public void editAlarmDialogue(){
+       Alarm Choice = returnEditChoice();
+       Long deleteLong= Choice.getPriority();
+        q.deleteByPriority(deleteLong);
+        this.bringUpEditForm();
+    }
+
+    public Alarm returnEditChoice(){
+        Alarm[] list5 = q.returnAlarms();
+        JFrame frame = new JFrame("JOptionPane showMessageDialog example");
+
+        Alarm s = (Alarm)JOptionPane.showInputDialog(
+                null,
+                "Please choose the seconds for new alarm",
+                "Add Alarm- Seconds",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                list5,
+                "00");
+        return s;
+    }
+    public String getNextAlarm(){
+        String answer = "";
+
+        try{
+           Alarm answer1 = q.head();
+            answer = answer1.toString();
+        }catch(QueueUnderflowException e){
+            System.out.println(e);
+        }
+
+        return answer;
+    }
+    public void bringUpEditForm(){
+
+
+        String h = (String)JOptionPane.showInputDialog(
+                null,
+                "Please choose the Hours for  alarm",
+                "Edit Alarm- Hours",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                list3,"00");
+        String s  = (String)JOptionPane.showInputDialog(
+                null,
+                "Please choose the Minutes for  alarm",
+                "Edit Alarm- Minutes",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                list4,
+                "00");
+
+
+        int H = Integer.parseInt(h);
+        int S = Integer.parseInt(s);
+        Alarm newAlarm = new Alarm(H,S);
+
+        addAlarm(newAlarm, newAlarm.getPriority());
+
+
+    }
+
+    public void saveAlarms(){
+      
     }
 }

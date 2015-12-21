@@ -11,7 +11,7 @@ import java.util.Observable;
 public class View implements Observer {
 
     ClockPanel panel;
-
+    JLabel statusLabel;
     public View(Model model) {
         JFrame frame = new JFrame();
         panel = new ClockPanel(model);
@@ -29,6 +29,8 @@ public class View implements Observer {
         file.add(saveAlarm);
         JMenuItem printAlarms = new JMenuItem("Print Alarms");
         file.add(printAlarms);
+        JMenuItem editAlarms = new JMenuItem("Edit Alarms");
+        file.add(editAlarms);
 
         addAlarm.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -37,13 +39,18 @@ public class View implements Observer {
         });
         saveAlarm.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                model.addalarmdialogue();
+                model.saveAlarms();
             }
         });
         printAlarms.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-               String aids = model.printAlarms();
-                System.out.println(aids);
+               String prints = model.printAlarms();
+                System.out.println(prints);
+            }
+        });
+        editAlarms.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                model.editAlarmDialogue();
             }
         });
         frame.setJMenuBar(mb);
@@ -64,6 +71,7 @@ public class View implements Observer {
         JButton button = new JButton("Button 1 (PAGE_START)");
         pane.add(button, BorderLayout.PAGE_START);
 
+
         panel.setPreferredSize(new Dimension(400, 400));
         clockframe.add(panel, BorderLayout.CENTER);
 
@@ -73,8 +81,12 @@ public class View implements Observer {
         JButton but=new JButton();
         but.setText("Set Alarm");
 
+        statusLabel = new JLabel(model.getNextAlarm(),JLabel.CENTER);
+
+        statusLabel.setSize(350, 100);
 
         form.add(but);
+        form.add(statusLabel);
         form.add(Box.createRigidArea(new Dimension(10, 10)));
         clockframe.add(form);
         but.addActionListener(new ActionListener() {
@@ -89,13 +101,16 @@ public class View implements Observer {
 
         frame.pack();
         frame.setVisible(true);
+
     }
     
     public void update(Observable o, Object arg) {
         panel.repaint();
     }
 
-
+    public void updateLabel(Model model){
+        this.statusLabel.setText(model.getNextAlarm());
+    }
 
 
 }
