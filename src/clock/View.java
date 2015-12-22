@@ -4,6 +4,7 @@ package clock;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Observer;
 import java.util.Observable;
@@ -18,7 +19,11 @@ public class View implements Observer {
         //frame.setContentPane(panel);
         frame.setTitle("Java Clock");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+        try {
+            model.loadAlarms();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         JMenuBar mb = new JMenuBar();
 
         JMenu file = new JMenu("File");
@@ -31,6 +36,7 @@ public class View implements Observer {
         file.add(printAlarms);
         JMenuItem editAlarms = new JMenuItem("Edit Alarms");
         file.add(editAlarms);
+
 
         addAlarm.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
