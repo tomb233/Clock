@@ -23,6 +23,7 @@ public class View implements Observer {
             model.loadAlarms();
         } catch (IOException e) {
             e.printStackTrace();
+            System.out.println("Errrrrrer");
         }
         JMenuBar mb = new JMenuBar();
 
@@ -102,7 +103,12 @@ public class View implements Observer {
         });
         form.setPreferredSize(new Dimension(200, 200));
         // End of borderlayout code
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
 
+            public void run() {
+                model.saveAlarms();
+            }
+        }));
         frame.add(clockframe);
 
         frame.pack();

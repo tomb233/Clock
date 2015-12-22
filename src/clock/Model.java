@@ -4,6 +4,7 @@ import javafx.scene.layout.Priority;
 
 import javax.swing.*;
 import java.io.*;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -240,12 +241,22 @@ import java.util.Observable;
     public void loadAlarms() throws IOException {
         iCal test = new iCal();
 
-        test.read();
+        Long test2[] = test.read();
+        for (int x = 0; x < test2.length; x++) {
+            if(test2[x] == null){
+                break;
+            }
+            Alarm newAlarm = new Alarm(test2[x]);
+           
+            addAlarm(newAlarm,test2[x]);
+        }
+
+
     }
     public void saveAlarms(){
        iCal test = new iCal();
 
-        test.write("testfile", (SortedArrayPriorityQueue) q);
+        test.write("alarmfile", (SortedArrayPriorityQueue) q);
     }
 
 }

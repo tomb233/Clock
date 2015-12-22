@@ -72,10 +72,10 @@ public class iCal {
         }
     }
 
-    public void read() throws IOException {
-        FileReader reader = new FileReader("testfile.ics");
+    public Long[] read() throws IOException {
+        FileReader reader = new FileReader("alarmfile.ics");
         BufferedReader textReader = new BufferedReader(reader);
-
+        Long alarms[];
 
         String[] textData = new String[9];
         int BufferIndex = 0;
@@ -86,11 +86,9 @@ public class iCal {
                 textData[BufferIndex] = textReader.readLine();
                 BufferIndex = BufferIndex + 1;
                 System.out.println(textData[BufferIndex-1]);
-            }else{
-               System.out.println("no");
             }
         }
-       Long alarms[] = new Long[9];
+        alarms = new Long[textData.length];
         for (int x = 0; x < textData.length; x++) {
 
             if(textData[x] == null){
@@ -98,10 +96,17 @@ public class iCal {
             }
             String test1 = textData[x].replaceAll("[^\\d.]", "");
             alarms[x] = Long.parseLong(test1);
-            System.out.println(alarms[x]);
+
+
+
+
         }
         // close the line-by-line reader and return the data
         textReader.close();
+        return alarms;
+
+
+
     }
 
 }
